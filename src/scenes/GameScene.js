@@ -45,11 +45,13 @@ class GameScene extends Phaser.Scene {
   // ─── Input ─────────────────────────────────────────────────────────────────
 
   _setupInput() {
-    this.input.on('pointerdown', p => { this._touchX = p.x; this._touchY = p.y; });
+    // Offset player 90px above finger so face is visible while touching
+    const OFFSET = 90;
+    this.input.on('pointerdown', p => { this._touchX = p.x; this._touchY = p.y - OFFSET; });
     this.input.on('pointermove', p => {
       if (!p.isDown) return;
       this._touchX = p.x;
-      this._touchY = p.y;
+      this._touchY = p.y - OFFSET;
     });
     this._cursors = this.input.keyboard.createCursorKeys();
     this._wasd    = this.input.keyboard.addKeys('W,A,S,D');
@@ -74,7 +76,7 @@ class GameScene extends Phaser.Scene {
     this._xpBar = this.add.rectangle(8, 36, 0, 10, 0x44aaff).setOrigin(0, 0).setDepth(d);
 
     // Level label
-    this._lvLabel = this.add.text(8, 48, 'LV1 赤ちゃん', {
+    this._lvLabel = this.add.text(8, 48, 'LV1 ゆきんこベビー', {
       fontSize: '11px', color: '#ffdd88', fontStyle: 'bold'
     }).setDepth(d);
 
@@ -207,9 +209,11 @@ class GameScene extends Phaser.Scene {
     const roll = Math.random();
     let cfg;
 
-    if      (this.level >= 8 && roll < 0.25) cfg = { key: 'enemy-tank', hp: 100, xp: 40, score: 300, vy: 1.2, sz: 72, shoots: false };
-    else if (this.level >= 4 && roll < 0.45) cfg = { key: 'enemy-fast', hp: 15,  xp: 20, score: 150, vy: 3.2, sz: 56, weave: true,  shoots: false };
-    else                                      cfg = { key: 'enemy-basic', hp: 30,  xp: 15, score: 100, vy: 1.8, sz: 60, shoots: this.level >= 3 };
+    // HP scaled to be killable in 3-6 baby bullets
+    const lvScale = Math.floor(this.level / 3);
+    if      (this.level >= 8 && roll < 0.25) cfg = { key: 'enemy-tank',  hp: 8 + lvScale * 3, xp: 40, score: 300, vy: 1.2, sz: 72, shoots: false };
+    else if (this.level >= 4 && roll < 0.45) cfg = { key: 'enemy-fast',  hp: 2 + lvScale,     xp: 20, score: 150, vy: 3.2, sz: 56, weave: true, shoots: false };
+    else                                      cfg = { key: 'enemy-basic', hp: 3 + lvScale,     xp: 15, score: 100, vy: 1.8, sz: 60, shoots: this.level >= 3 };
 
     const img = this.add.image(x, -40, cfg.key)
       .setDisplaySize(cfg.sz, cfg.sz).setDepth(C.DEPTH_ENEMY);
@@ -298,7 +302,7 @@ class GameScene extends Phaser.Scene {
         const e = this.enemies[ei];
         if (!e.img.active) continue;
         const sz = e.img.displayWidth;
-        if (!this._hit(b.img.x, b.img.y, 7, 20, e.img.x, e.img.y, sz * 0.7, sz * 0.7)) continue;
+        if (!this._hit(b.img.x, b.img.y, 14, 24, e.img.x, e.img.y, sz * 0.9, sz * 0.9)) continue;
         // Hit!
         b.img.destroy(); this.bullets.splice(bi, 1);
         e.hp -= b.dmg;

@@ -18,6 +18,16 @@ class BootScene extends Phaser.Scene {
 
   create() {
     this._gen();
+    // Load saved photo from localStorage and apply to all player tiers
+    try {
+      const photo = localStorage.getItem('yukinkoPhoto');
+      if (photo) {
+        ['yukinko-baby', 'yukinko-warrior', 'yukinko-samurai'].forEach(key => {
+          if (this.textures.exists(key)) this.textures.remove(key);
+          this.textures.addBase64(key, photo);
+        });
+      }
+    } catch(e) {}
     this.scene.start('MenuScene');
   }
 
