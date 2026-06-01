@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>ゆきんこシューター</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    canvas { display: block; image-rendering: pixelated; }
+  </style>
+</head>
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+
+  <!-- Load order: constants → classes → scenes → boot -->
+  <script src="src/constants.js"></script>
+  <script src="src/Player.js"></script>
+  <script src="src/Enemy.js"></script>
+  <script src="src/Projectile.js"></script>
+  <script src="src/EnemySpawner.js"></script>
+  <script src="src/HUD.js"></script>
+  <script src="src/effects/ParticleEffects.js"></script>
+  <script src="src/scenes/BootScene.js"></script>
+  <script src="src/scenes/MenuScene.js"></script>
+  <script src="src/scenes/GameScene.js"></script>
+  <script src="src/scenes/GameOverScene.js"></script>
+
+  <script>
+    new Phaser.Game({
+      type:            Phaser.AUTO,
+      width:           480,
+      height:          720,
+      backgroundColor: '#0a0020',
+      physics: {
+        default: 'arcade',
+        arcade:  { gravity: { y: 0 }, debug: false }
+      },
+      scene: [BootScene, MenuScene, GameScene, GameOverScene],
+      scale: {
+        mode:            Phaser.Scale.FIT,
+        autoCenter:      Phaser.Scale.CENTER_BOTH,
+        parent:          document.body,
+      }
+    });
+  </script>
+</body>
+</html>
