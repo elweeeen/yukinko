@@ -16,7 +16,7 @@
     }
     canvas { display: block; -webkit-touch-callout: none; }
 
-    /* Photo button — real HTML label over the canvas, iOS-safe */
+    /* Photo button — transparent file input overlay, iOS-safe */
     #photo-btn {
       display: none;
       position: fixed;
@@ -24,29 +24,43 @@
       left: 50%;
       transform: translateX(-50%);
       z-index: 999;
-      touch-action: auto;
     }
-    #photo-btn label {
-      display: block;
-      background: rgba(40,40,40,0.92);
+    #photo-btn-inner {
+      position: relative;
+      display: inline-block;
+    }
+    #photo-btn-face {
+      background: rgba(40,40,40,0.95);
       color: #fff;
       font-size: 16px;
       padding: 13px 28px;
       border-radius: 12px;
       border: 1px solid #666;
-      cursor: pointer;
       white-space: nowrap;
+      pointer-events: none;
       -webkit-user-select: none;
+      user-select: none;
     }
-    #photo-btn input { display: none; }
+    #photoInput {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
   </style>
 </head>
 <body>
 
   <!-- Native HTML photo picker (not Phaser) — works on iOS Safari -->
   <div id="photo-btn">
-    <label for="photoInput">📷 ゆきんこの写真を使う</label>
-    <input type="file" id="photoInput" accept="image/*">
+    <div id="photo-btn-inner">
+      <div id="photo-btn-face">📷 ゆきんこの写真を使う</div>
+      <input type="file" id="photoInput" accept="image/*">
+    </div>
   </div>
 
   <script>
