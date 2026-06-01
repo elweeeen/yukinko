@@ -15,25 +15,60 @@
       -webkit-user-select: none; user-select: none;
     }
     canvas { display: block; -webkit-touch-callout: none; }
+
+    /* Photo button — real HTML label over the canvas, iOS-safe */
+    #photo-btn {
+      display: none;
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      touch-action: auto;
+    }
+    #photo-btn label {
+      display: block;
+      background: rgba(40,40,40,0.92);
+      color: #fff;
+      font-size: 16px;
+      padding: 13px 28px;
+      border-radius: 12px;
+      border: 1px solid #666;
+      cursor: pointer;
+      white-space: nowrap;
+      -webkit-user-select: none;
+    }
+    #photo-btn input { display: none; }
   </style>
 </head>
 <body>
-  <!-- Hidden file input for photo selection -->
-  <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="
-    const file = this.files[0]; if (!file) return;
-    const reader = new FileReader();
-    reader.onload = ev => {
-      localStorage.setItem('yukinkoPhoto', ev.target.result);
-      location.reload();
-    };
-    reader.readAsDataURL(file);
-  ">
+
+  <!-- Native HTML photo picker (not Phaser) — works on iOS Safari -->
+  <div id="photo-btn">
+    <label for="photoInput">📷 ゆきんこの写真を使う</label>
+    <input type="file" id="photoInput" accept="image/*">
+  </div>
+
+  <script>
+    document.getElementById('photoInput').addEventListener('change', function () {
+      const file = this.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function (ev) {
+        localStorage.setItem('yukinkoPhoto', ev.target.result);
+        location.reload();
+      };
+      reader.readAsDataURL(file);
+    });
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
   <script src="src/constants.js"></script>
   <script src="src/scenes/BootScene.js"></script>
   <script src="src/scenes/MenuScene.js"></script>
   <script src="src/scenes/GameScene.js"></script>
   <script src="src/scenes/GameOverScene.js"></script>
+
   <script>
     new Phaser.Game({
       type: Phaser.CANVAS,

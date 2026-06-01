@@ -30,6 +30,10 @@ class GameScene extends Phaser.Scene {
     this.player  = this.add.image(C.W / 2, C.H - 110, this._tierKey())
       .setDisplaySize(72, 72).setDepth(C.DEPTH_PLAYER);
 
+    // Ensure HTML photo button is hidden during gameplay
+    const btn = document.getElementById('photo-btn');
+    if (btn) btn.style.display = 'none';
+
     this._setupInput();
     this._setupHUD();
 
