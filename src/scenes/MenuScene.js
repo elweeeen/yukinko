@@ -27,8 +27,20 @@ class MenuScene extends Phaser.Scene {
     }).setOrigin(0.5);
     this.tweens.add({ targets: s, alpha: 0, yoyo: true, duration: 600, repeat: -1 });
 
+    // Photo upload button
+    const photoBtnBg = this.add.rectangle(W/2, H - 38, 260, 36, 0x333333).setOrigin(0.5).setInteractive();
+    const photoBtnTxt = this.add.text(W/2, H - 38, '📷 ゆきんこの写真を使う', {
+      fontSize: '15px', color: '#ffffff'
+    }).setOrigin(0.5);
+    photoBtnBg.on('pointerdown', () => document.getElementById('photoInput').click());
+    photoBtnTxt.setInteractive().on('pointerdown', () => document.getElementById('photoInput').click());
+
     const go = () => this.scene.start('GameScene');
     this.input.keyboard.once('keydown-SPACE', go);
-    this.input.once('pointerdown', go);
+    // Only start game on tap if NOT tapping the photo button
+    this.input.on('pointerdown', (p) => {
+      const onBtn = Math.abs(p.x - W/2) < 130 && Math.abs(p.y - (H - 38)) < 18;
+      if (!onBtn) go();
+    });
   }
 }
