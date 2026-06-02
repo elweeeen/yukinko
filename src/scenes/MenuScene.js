@@ -21,6 +21,15 @@ class MenuScene extends Phaser.Scene {
     const face = this.add.image(W/2, H/2 - 20, 'yukinko-baby').setDisplaySize(180, 180);
     this.tweens.add({ targets: face, y: H/2 - 40, yoyo: true, duration: 900, repeat: -1, ease: 'Sine.easeInOut' });
 
+    // High score
+    let hiScore = 0;
+    try { hiScore = parseInt(localStorage.getItem('yukinkoHiScore') || '0', 10); } catch(e) {}
+    if (hiScore > 0) {
+      this.add.text(W/2, H - 200, `BEST: ${hiScore.toLocaleString()}`, {
+        fontSize: '18px', color: '#ffdd88', fontStyle: 'bold', stroke: '#000', strokeThickness: 3
+      }).setOrigin(0.5);
+    }
+
     this.add.text(W/2, H - 175, '指でドラッグして移動', { fontSize: '16px', color: '#dddddd' }).setOrigin(0.5);
     this.add.text(W/2, H - 150, '弾は自動発射！', { fontSize: '16px', color: '#dddddd' }).setOrigin(0.5);
 

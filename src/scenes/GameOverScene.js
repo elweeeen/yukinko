@@ -10,6 +10,18 @@ class GameOverScene extends Phaser.Scene {
                    : this._d.level >= 5  ? 'ゆきんこウォリアー'
                    : '赤ちゃんゆきんこ';
 
+    // Update and retrieve high score
+    let hiScore = 0;
+    try {
+      hiScore = parseInt(localStorage.getItem('yukinkoHiScore') || '0', 10);
+      if (this._d.score > hiScore) {
+        hiScore = this._d.score;
+        localStorage.setItem('yukinkoHiScore', hiScore);
+      }
+    } catch(e) {}
+
+    const isNew = hiScore === this._d.score && this._d.score > 0;
+
     this.add.text(W/2, H/2 - 130, 'GAME OVER', {
       fontSize: '46px', color: '#ff4466', fontStyle: 'bold', stroke: '#000', strokeThickness: 6
     }).setOrigin(0.5);
@@ -22,7 +34,18 @@ class GameOverScene extends Phaser.Scene {
       fontSize: '30px', color: '#ffffff', fontStyle: 'bold'
     }).setOrigin(0.5);
 
-    this.add.text(W/2, H/2 + 55, `到達レベル: ${this._d.level}`, {
+    if (isNew) {
+      const newBest = this.add.text(W/2, H/2 + 38, '★ NEW BEST ★', {
+        fontSize: '18px', color: '#ffdd00', fontStyle: 'bold', stroke: '#000', strokeThickness: 3
+      }).setOrigin(0.5);
+      this.tweens.add({ targets: newBest, alpha: 0.2, yoyo: true, duration: 500, repeat: -1 });
+    } else {
+      this.add.text(W/2, H/2 + 38, `BEST: ${hiScore.toLocaleString()}`, {
+        fontSize: '18px', color: '#ffdd88'
+      }).setOrigin(0.5);
+    }
+
+    this.add.text(W/2, H/2 + 70, `到達レベル: ${this._d.level}`, {
       fontSize: '22px', color: '#aaaaff'
     }).setOrigin(0.5);
 
